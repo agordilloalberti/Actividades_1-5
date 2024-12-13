@@ -12,6 +12,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -201,9 +202,37 @@ A nivel funcional no permitas que se introduzcan caracteres que invaliden un nú
 fun Actividad5() {
     var myVal by rememberSaveable { mutableStateOf("") }
 
+    Box(modifier = Modifier.fillMaxSize().padding(20.dp)) {
+        AddOutlinedTextField(myVal,Modifier.align(Alignment.Center).padding(15.dp))  { input ->
+            var s = input.replace(',', '.')
+            var dec = false
+            s = s.filter { char ->
+                if (char == '.') {
+                    if (dec) {
+                        false
+                    } else {
+                        dec = true
+                        true
+                    }
+                } else {
+                    char.isDigit()
+                }
+            }
+            myVal = s
+        }
+    }
+}
+
+@Composable
+fun AddOutlinedTextField(myVal:String,modifier: Modifier,onValueChange: (String) -> Unit) {
     OutlinedTextField(
+        modifier = modifier,
         value = myVal,
-        onValueChange = { myVal = it },
-        label = { Text(text = "Importe") }
+        onValueChange = onValueChange,
+        label = {Text("Importe")},
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = Color.LightGray,
+            focusedBorderColor = Color.Black
+        )
     )
 }
